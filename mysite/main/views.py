@@ -11,6 +11,8 @@ class IndexView(TemplateView):
 
 def signup(request):
     if request.method == 'POST':
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
@@ -24,12 +26,12 @@ def signup(request):
                 messages.info(request, 'This username already exists')
                 return redirect('signup')
             else:
-                user = User.objects.create_user(username=username, email=email, password=password)
+                user = User.objects.create_user(username=username, email=email, password=password , first_name=first_name, last_name=last_name)
                 user.save()
                 
                 
                 user_model = User.objects.get(username=username)
-                new_profile = Profile.objects.create(user = user_model, id_user = user_model.id)
+                new_profile = Profile.objects.create(user = user_model, id_user = user_model.id , first_name = user_model.first_name, last_name = user_model.last_name)
                 new_profile.save()
                 return redirect('signup')
         else:
