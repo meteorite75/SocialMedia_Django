@@ -40,3 +40,18 @@ def signup(request):
 
     else:
         return render(request, 'signup.html')
+    
+def login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        
+        user = auth.authenticate(username =username, password = password)
+        if user:
+            auth.login(request, user)
+            return redirect('/')
+        else:
+            messages.info(request, "You haven't signup yet")
+            return redirect('login')
+    else:
+        return render(request, 'signin.html')
