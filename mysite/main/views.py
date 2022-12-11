@@ -2,12 +2,13 @@ from django.shortcuts import render , redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.views.generic import TemplateView
+from django.contrib.auth.decorators import login_required
 from .models import Profile
 
 
-
-class IndexView(TemplateView):
-    template_name = "index.html"
+@login_required(login_url='login')
+def index(request):
+    return render(request, 'index.html')
 
 def signup(request):
     if request.method == 'POST':
@@ -47,7 +48,7 @@ def login(request):
         password = request.POST['password']
         
         user = auth.authenticate(username =username, password = password)
-        if user:
+        if user is not None:
             auth.login(request, user)
             return redirect('/')
         else:
@@ -55,3 +56,9 @@ def login(request):
             return redirect('login')
     else:
         return render(request, 'signin.html')
+    
+@login_required(login_url='login')
+def logout(request):
+    auth.logout(request)
+    return redirect('login')
+
