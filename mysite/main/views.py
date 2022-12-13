@@ -68,6 +68,9 @@ def signup(request):
                 user = User.objects.create_user(username=username, email=email, password=password , first_name=first_name, last_name=last_name)
                 user.save()
                 
+                user_login = auth.authenticate(username=username, password=password)
+                auth.login(request, user_login)
+                
                 user_model = User.objects.get(username=username)
                 new_profile = Profile.objects.create(user = user_model, id_user = user_model.id , first_name = user_model.first_name, last_name = user_model.last_name)
                 new_profile.save()
