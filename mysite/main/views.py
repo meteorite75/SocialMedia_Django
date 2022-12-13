@@ -10,6 +10,44 @@ from .models import Profile
 def index(request):
     return render(request, 'index.html')
 
+@login_required(login_url='login')
+def settings(request):
+    user_profile = Profile.objects.get(user=request.user)
+    
+    if request.method == 'POST':
+            
+        if request.FILES.get('image'):
+            image = request.FILES['image']
+            bio = request.POST['bio']
+            location = request.POST['location']
+            first_name = request.POST['first_name']
+            last_name = request.POST['last_name']
+            
+            user_profile.profileimg = image
+            user_profile.bio = bio
+            user_profile.location = location
+            user_profile.first_name = first_name
+            user_profile.last_name = last_name
+            user_profile.save()
+            
+        else:
+            # image = user_profile.profileimg
+            bio = request.POST['bio']
+            location = request.POST['location']
+            first_name = request.POST['first_name']
+            last_name = request.POST['last_name']
+            
+            # user_profile.profileimg = image
+            user_profile.bio = bio
+            user_profile.location = location
+            user_profile.first_name = first_name
+            user_profile.last_name = last_name
+            user_profile.save()
+            
+        return redirect('settings')
+    
+    return render(request, 'setting.html', {'user_profile': user_profile})
+
 def signup(request):
     if request.method == 'POST':
         first_name = request.POST['first_name']
@@ -30,11 +68,10 @@ def signup(request):
                 user = User.objects.create_user(username=username, email=email, password=password , first_name=first_name, last_name=last_name)
                 user.save()
                 
-                
                 user_model = User.objects.get(username=username)
                 new_profile = Profile.objects.create(user = user_model, id_user = user_model.id , first_name = user_model.first_name, last_name = user_model.last_name)
                 new_profile.save()
-                return redirect('signup')
+                return redirect('settings')
         else:
             messages.info(request, 'password not matching')
             return redirect('signup')
@@ -61,4 +98,3 @@ def login(request):
 def logout(request):
     auth.logout(request)
     return redirect('login')
-
