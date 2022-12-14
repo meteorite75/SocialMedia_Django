@@ -8,7 +8,9 @@ from .models import Profile
 
 @login_required(login_url='login')
 def index(request):
-    return render(request, 'index.html')
+    user_object = User.objects.get(username = request.user.username)
+    user_profile = Profile.objects.get(user = user_object)
+    return render(request, 'index.html', {'user_profile': user_profile})
 
 @login_required(login_url='login')
 def settings(request):
