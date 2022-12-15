@@ -57,7 +57,7 @@
     
                             <!-- notivication header -->
                             <div class="px-4 py-3 -mx-5 -mt-4 mb-5 border-b">
-                                <h4>Upload Pics or Videos</h4>
+                                <h4>Upload Posts</h4>
                             </div>
     
                             <!-- notification contents -->
@@ -71,17 +71,24 @@
                                             <path d="M9 13h2v5a1 1 0 11-2 0v-5z" />
                                         </svg>
                                     </div>
-
-                                    <p class="my-3 leading-6"> Upload pics or videos <br> please upload her ..
+                                    
+                                    <form action="upload" method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        
+                                    <p class="my-3 leading-6"> Upload pics <br> please upload here ...
                                     </p>
-                                    <div uk-form-custom>
-                                        <input type="file">
-                                        <a href="#" class="button soft-warning small"> Choose file</a>
+                                    <div>
+                                        <input type="file" name="post_image">
+                                        <!-- <a href="#" class="button soft-warning small"> Create a post</a> -->
+                                        <textarea name="caption" placeholder="your caption..." class="button soft-warning small"></textarea>
+                                        <br>
+                                        <button type="submit" class="button bg-blue-700">Create a post</button>
                                     </div>
+                                    </form>
     
-                                    <a href="#" class="uk-text-muted mt-3 uk-link"
+                                    <!-- <a href="#" class="uk-text-muted mt-3 uk-link"
                                         uk-toggle="target: .choose-upload ;  animation: uk-animation-slide-right-small, uk-animation-slide-left-medium; queued: true">
-                                        Or Import Video </a>
+                                        Or Import Video </a> -->
                                 </div>
     
                                 <div class="uk-flex uk-flex-column choose-upload" hidden>
@@ -104,9 +111,9 @@
                                 </div>
     
                             </div>
-                            <div class="px-4 py-3 -mx-5 -mb-4 mt-5 border-t text-sm">
+                            <!-- <div class="px-4 py-3 -mx-5 -mb-4 mt-5 border-t text-sm">
                                 Your Video size Must be Maxmium 999MB
-                            </div>
+                            </div> -->
                         </div>
                         
                          <!-- Notification -->
