@@ -12,3 +12,10 @@ class Post(models.Model):
     
     def __str__(self):
         return self.caption
+    
+class Likepost(models.Model):
+    post_id = models.CharField(max_length=100)
+    post_liker = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.post_liker
