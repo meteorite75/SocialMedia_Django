@@ -4,13 +4,16 @@ from django.contrib import messages
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 from .models import Profile
+from posts.models import Post
 
 
 @login_required(login_url='login')
 def index(request):
     user_object = User.objects.get(username = request.user.username)
     user_profile = Profile.objects.get(user = user_object)
-    return render(request, 'index.html', {'user_profile': user_profile})
+    
+    posts = Post.objects.all()
+    return render(request, 'index.html', {'user_profile': user_profile, 'posts': posts})
 
 @login_required(login_url='login')
 def settings(request):
