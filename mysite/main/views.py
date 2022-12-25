@@ -106,3 +106,19 @@ def login(request):
 def logout(request):
     auth.logout(request)
     return redirect('login')
+
+@login_required(login_url='login')
+def profile(request , pk):
+    user_object = User.objects.get(username = pk)
+    profile_user = Profile.objects.get(user = user_object)
+    user_posts = Post.objects.filter(user = pk)
+    user_post_lenth = len(user_posts)
+    
+    
+    context = {
+        'user_object': user_object,
+        'profile_user': profile_user,
+        'user_posts' : user_posts,
+        'user_post_lenth' : user_post_lenth,
+    }
+    return render(request, 'profile.html', context)
