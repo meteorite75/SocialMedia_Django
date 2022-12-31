@@ -1,9 +1,8 @@
 from django.shortcuts import render , redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
-from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
-from .models import Profile
+from .models import Profile, FollowersCount
 from posts.models import Post
 
 
@@ -114,11 +113,47 @@ def profile(request , pk):
     user_posts = Post.objects.filter(user = pk)
     user_post_lenth = len(user_posts)
     
+    follower = request.user.username
+    followed_user = pk
+    
+    if FollowersCount.objects.filter(follower = follower, followed_user = followed_user).first():
+        button_text = 'unfollow'
+    else:
+        button_text = 'follow'
+        
+    # users who followed this profile
+    user_followers = len(FollowersCount.objects.filter(followed_user = pk))
+    # users that this profile has follwed
+    user_followings = len(FollowersCount.objects.filter(follower = pk))
+        
     
     context = {
         'user_object': user_object,
         'profile_user': profile_user,
         'user_posts' : user_posts,
         'user_post_lenth' : user_post_lenth,
+        'button_text' : button_text,
+        'user_followers' : user_followers,
+        'user_followings' : user_followings,
     }
     return render(request, 'profile.html', context)
+
+@login_required(login_url='login')
+def follow(request):
+
+    if request.method == 'POST':
+        follower = request.user.username
+        followed_user = request.POST['followed_user']
+        
+        if FollowersCount.objects.filter(follower = follower , followed_user = followed_user).first():
+            follower_delete = FollowersCount.objects.get(follower = follower, followed_user = followed_user)
+            follower_delete.delete()
+            return redirect('/profile/'+followed_user)
+        else:
+            new_follower = FollowersCount.objects.create(follower = follower , followed_user = followed_user)
+            new_follower.save()
+            return redirect('/profile/'+followed_user)
+        
+    else:
+        return redirect('/')
+    
