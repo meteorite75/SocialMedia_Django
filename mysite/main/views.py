@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Profile, FollowersCount
 from posts.models import Post
+from itertools import chain
 
 
 @login_required(login_url='login')
@@ -11,8 +12,23 @@ def index(request):
     user_object = User.objects.get(username = request.user.username)
     user_profile = Profile.objects.get(user = user_object)
     
+    user_following_list = []
+    feed = []
+    
+    user_following = FollowersCount.objects.filter(follower = request.user.username)
+    
+    for i in user_following:
+        user_following_list.append(i.followed_user)
+        
+    for i in user_following_list:
+        feed_list = Post.objects.filter(user = i)
+        feed.append(feed_list)
+    
+    feed_list = list(chain(*feed))
+    
+    
     posts = Post.objects.all()
-    return render(request, 'index.html', {'user_profile': user_profile, 'posts': posts})
+    return render(request, 'index.html', {'user_profile': user_profile, 'posts': feed_list})
 
 @login_required(login_url='login')
 def settings(request):
